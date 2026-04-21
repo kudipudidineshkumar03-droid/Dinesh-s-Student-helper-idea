@@ -1,0 +1,47 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+</head>
+<body style="text-align:center; margin-top:100px;">
+
+<h2>User Signup</h2>
+
+<input type="text" id="rollno" placeholder="Enter Roll Number"><br><br>
+<input type="password" id="password" placeholder="Create Password"><br><br>
+
+<button onclick="signup()">Signup</button>
+
+<script>
+function signup() {
+    let roll = document.getElementById("rollno").value;
+    let pass = document.getElementById("password").value;
+
+    if(roll === "" || pass === "") {
+        alert("Fill all details!");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+
+    if(users[roll]) {
+        alert("Account already exists!");
+        return;
+    }
+
+    users[roll] = pass;
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Account created successfully!");
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

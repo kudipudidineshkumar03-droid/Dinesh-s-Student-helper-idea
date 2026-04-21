@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Helper</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #f2f2f2;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            margin: 50px auto;
+            width: 300px;
+            border-radius: 10px;
+        }
+        button {
+            padding: 10px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2 id="welcome"></h2>
+
+    <button onclick="logout()">Logout</button>
+
+    <!-- 👑 ADMIN PANEL -->
+    <div id="adminPanel" style="display:none;">
+        <h3>Upload Notes (PDF)</h3>
+        <input type="file" id="fileInput"><br>
+        <button onclick="uploadPDF()">Upload</button>
+    </div>
+
+    <!-- 👤 USER PANEL -->
+    <div id="userPanel" style="display:none;">
+        <h3>Download Notes</h3>
+        <ul id="pdfList"></ul>
+    </div>
+</div>
+
+<script>
+let role = localStorage.getItem("role");
+let username = localStorage.getItem("username");
+
+if(!role){
+    window.location.href = "login.html";
+}
+
+document.getElementById("welcome").innerText = "Welcome " + username;
+
+// 👑 Admin view
+if(role === "admin") {
+    document.getElementById("adminPanel").style.display = "block";
+}
+
+// 👤 User view
+else {
+    document.getElementById("userPanel").style.display = "block";
+    loadPDFs();
+}
+
+// 📂 Upload PDF
+function uploadPDF() {
+    let file = document.getElementById("fileInput").files[0];
+
+    if(!file){
+        alert("Select a file!");
+        return;
+    }
+
+    let reader = new FileReader();
+
+    reader.onload = function() {
+        let pdfs = JSON.parse(localStorage.getItem("pdfs")) || [];
+
+        pdfs.push({
+            name: file.name,
+            data: reader.result
+        });
+
+        localStorage.setItem("pdfs", JSON.stringify(pdfs));
+
+        alert("PDF uploaded!");
+    };
+
+    reader.readAsDataURL(file);
+}
+
+// 📥 Load PDFs
+function loadPDFs() {
+    let pdfs = JSON.parse(localStorage.getItem("pdfs")) || [];
+    let list = document.getElementById("pdfList");
+
+    list.innerHTML = "";
+
+    pdfs.forEach(p => {
+        let li = document.createElement("li");
+
+        let link = document.createElement("a");
+        link.href = p.data;
+        link.download = p.name;
+        link.innerText = p.name;
+
+        li.appendChild(link);
+        list.appendChild(li);
+    });
+}
+
+// 🚪 Logout
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

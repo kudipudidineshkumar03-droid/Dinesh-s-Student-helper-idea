@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+
+<body style="text-align:center; margin-top:100px;">
+
+<h2>Login</h2>
+
+<input type="text" id="username" placeholder="Enter Username"><br><br>
+<input type="password" id="password" placeholder="Enter Password"><br><br>
+
+<button onclick="login()">Login</button>
+
+<p><a href="signup.html">New user? Signup</a></p>
+
+<script>
+function login() {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+
+    // 👑 Admins
+    if (
+        (user === "ASHOK" && pass === "ASHOK_222") ||
+        (user === "DINESH" && pass === "DINESH_222") ||
+        (user === "KARTHIK" && pass === "KARTHIK_222")
+    ) {
+        localStorage.setItem("role", "admin");
+    }
+
+    // 👤 Users
+    else if (users[user] && users[user] === pass) {
+        localStorage.setItem("role", "user");
+    }
+
+    else {
+        alert("Invalid login!");
+        return;
+    }
+
+    localStorage.setItem("username", user);
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
